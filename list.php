@@ -10,10 +10,18 @@ if ($mysqli->connect_error) {
         $mysqli->connect_errno . ') ' .
         $mysqli->connect_error);
 }
-
-$sql = " SELECT * FROM registration_form";
+$sql = " SELECT * FROM registration_form where deleted=0";
 $result = $mysqli->query($sql);
-$mysqli->close();
+
+if(isset($_REQUEST['mode'])&& $_REQUEST['mode']=='Delete'){
+    $id=$_REQUEST['id'];
+    $delsql = "UPDATE `registration_form` SET `deleted`=1 WHERE id=$id ; ";
+   
+    $mysqli->query($delsql);
+    // header("location:list.php");
+}
+
+
 ?>
 
 <html>
@@ -57,10 +65,14 @@ $mysqli->close();
     </style>
 
     <script>
+
+
         const confirmAction = () => {
-            const response = confirm("Are you sure you want to delete that?");
-            if (response) {
-                alert("List item deleted. ");
+            if (confirm("Are you sure you want to delete that?")) {
+               return true;
+            }
+            else{
+                return false;
             }
         }
 
@@ -125,8 +137,8 @@ $mysqli->close();
         $(document).ready(function () {
             $(".btn").click(function () {
                 $("#myModal").modal('show');
-                <?php 
-                
+                <?php
+
                 ?>
             });
             $("#confirm").click(function () {
@@ -180,26 +192,38 @@ $mysqli->close();
 
             <?php
             while ($rows = $result->fetch_assoc()) {
+                echo $current_ID = $row['id'];
                 ?>
-                <tr><td>
-                    <input type="checkbox" onclick="deSelect()" name="chk" id="chk" onclick="deSelect()" value=""
-                        padding="50px"></input>
-                    </td>
-                    <td> <?php echo $rows['image']; ?></td>
-                    <td><?php echo $rows['first_name']; ?></td>
-                    <td><?php echo $rows['last_name']; ?></td>
-                    <td><?php echo $rows['email']; ?></td>
-                    <td><?php echo $rows['phone_number']; ?></td>
+                <tr>
                     <td>
-                        <button> Edit </button>
-                        <button onclick="confirmAction()"> Delete </button>
+                        <input type="checkbox" onclick="deSelect()" name="chk" id="chk<?php echo $rows['id'] ?>" onclick="deSelect()" value=""
+                            padding="50px"></input>
+                    </td>
+                    <td>
+                        <?php echo $rows['image']; ?>
+                    </td>
+                    <td>
+                        <?php echo $rows['first_name']; ?>
+                    </td>
+                    <td>
+                        <?php echo $rows['last_name']; ?>
+                    </td>
+                    <td>
+                        <?php echo $rows['email']; ?>
+                    </td>
+                    <td>
+                        <?php echo $rows['phone_number']; ?>
+                    </td>
+                    <td>
+                        <button><a href="registration.php?id=<?php echo $rows['id'] ?>&mode=Edit">Edit</a>
+                        </button>
+                        <button onclick="confirmAction()">
+                           <a href="list.php?id=<?php echo $rows['id'] ?>&mode=Delete">Delete</a></button>
                     </td>
                     <td>
                         <div class="sample">
-
-                            <button type="button" class="btn btn-primary"> View </button>
-
-
+                            <button type="button" class="btn "> <a href="list.php?id=<?php echo $rows['id'] ?>&mode=View">View</a>
+                            </button>
                             <div id="myModal" class="modal fade" tabindex="-1">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -211,21 +235,20 @@ $mysqli->close();
                                             <table id="table1">
                                                 <tr border="1px solid black" name="list">
                                                     <td> <b>First Name :</b></td>
-                                                    <td> Mohammad </td>
+                                                    <td id="fname"> Mohammad </td>
                                                 </tr>
                                                 <tr border="1px solid black" name="list">
                                                     <td> <b>Last Name :</b></td>
-                                                    <td> Shakir </td>
+                                                    <td id="lname"> Shakir </td>
                                                 </tr>
                                                 <tr border="1px solid black" name="list">
                                                     <td> <b>Phone Number :</b></td>
-                                                    <td> 1234567890 </td>
+                                                    <td id="phone"> 1234567890 </td>
                                                 </tr>
                                                 <tr border="1px solid black" name="list">
                                                     <td> <b>Email :</b></td>
-                                                    <td> abc12@gmail.com /td>
+                                                    <td id="email"> abc12@gmail.com /td>
                                                 </tr>
-
                                             </table>
                                         </div>
                                         <div class="modal-footer">

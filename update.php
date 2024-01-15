@@ -10,18 +10,20 @@ if ($mysqli->connect_error) {
         $mysqli->connect_errno . ') ' .
         $mysqli->connect_error);
 }
-if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'Edit') {
-  echo $id = $_REQUEST['id'];
-  echo $query = "SELECT * FROM registration_form WHERE id=$id";
-  
-  $result = $mysqli->query($query);
-  print_r($result);
-  print_r($row = mysqli_fetch_assoc($result));
+$id=$_REQUEST['id'];
+$sql = " SELECT * FROM registration_form where id=$id";
+$result = $mysqli->query($sql);
 
+if(isset($_REQUEST['mode'])&& $_REQUEST['mode']=='Edit'){
+    $id=$_REQUEST['id'];
+    $delsql = "UPDATE `registration_form` SET `deleted`=1 WHERE id=$id ; ";
+   
+    $mysqli->query($delsql);
+    // header("location:list.php");
 }
-$lang=explode(",",$row['language']);
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -85,9 +87,7 @@ $lang=explode(",",$row['language']);
       display: block;
     }
   </style>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"> </script>
-
 <body>
 
 
@@ -100,53 +100,53 @@ $lang=explode(",",$row['language']);
       <tr>
         <td>First Name</td>
         <td>
-          <input type="text" name="firstName" id="firstName" value="<?php echo $row['first_name']?>" /><br>
+          <input type="text" name="firstName" id="firstName" value="<?php echo $row['first_name'];?>" /><br>
           <span id="fName"></span>
         </td>
       </tr>
       <tr>
         <td>Last Name</td>
-        <td><input type="text" name="lastName" id="lastName" value="<?php echo $row['last_name']?>"  /><br>
+        <td><input type="text" name="lastName" id="lastName" value="<?php echo $row['last_name'];?>" /><br>
           <span id="lName" style="display: none;">Please provide your last name.</span>
         </td>
       </tr>
       <tr>
         <td>Password</td>
-        <td><input type="text" name="password" id="password" value="" disabled/><br>
+        <td><input type="text" name="password" id="password" value="<?php echo $row['password'];?>" /><br>
           <span id="pass" style="display: none;">Please provide your Password.</span>
         </td>
       </tr>
       <tr>
         <td>Confirm Password</td>
-        <td><input type="text" name="confirmPassword" id="confirmPassword" value="" disabled/><br>
+        <td><input type="text" name="confirmPassword" id="confirmPassword" value="<?php echo $row['confirm_password'];?>" /><br>
           <span id="cPass" style="display: none;">Please confirm your Password.</span>
         </td>
       </tr>
       <tr>
         <td>Address</td>
         <td>
-          <textarea name="address" id="address" rows="3" cols="26.9" style="padding: 2px" value=""><?php echo $row['address']?></textarea><br>
+          <textarea name="address" id="address" rows="3" cols="26.9" style="padding: 2px" value="<?php echo $row['address'];?>"></textarea><br>
           <span id="addr" style="display: none;">Please provide your Address.</span>
         </td>
       </tr>
       <tr>
         <td>Email</td>
-        <td><input type="email" name="email" id="email" value="<?php echo $row['email']?>"/><br>
+        <td><input type="email" name="email" id="email" value="<?php echo $row['email'];?>" /><br>
           <span id="mail" style="display: none;">Please provide your email.</span>
         </td>
       </tr>
       <tr>
         <td>Phone Number</td>
         <td>
-          <input type="text" name="phoneNumber" id="phoneNumber" value="<?php echo $row['phone_number']?>"/><br>
+          <input type="text" name="phoneNumber" id="phoneNumber" value="<?php echo $row['phone_number'];?>" /><br>
           <span id="phno" style="display: none;">Please provide your phone number.</span>
         </td>
       </tr>
       <tr>
         <td>Gender</td>
         <td>
-          <input type="radio" name="gender" id="genderMale" value="Male"<?php echo ($row['gender']=='Male')?'checked':'' ?>/>Male<br />
-          <input type="radio" name="gender" id="genderFemale" value="Female"<?php echo ($row['gender']=='Female')?'checked':'' ?> />Female
+          <input type="radio" name="gender" id="genderMale" value="Male" />Male<br />
+          <input type="radio" name="gender" id="genderFemale" value="Female" />Female
           <br>
           <span id="gen" style="display: none;">Please provide your Gender.</span>
         </td>
@@ -154,10 +154,9 @@ $lang=explode(",",$row['language']);
       <tr>
         <td>Language</td>
         <td>
-          
-          <input type="checkbox" name="language[]" id="language1" value="Hindi"<?php if(in_array("Hindi",$lang)) { ?> checked="checked" <?php } ?>  />Hindi<br />
-          <input type="checkbox" name="language[]" id="language2" value="English"<?php if(in_array("English",$lang)) { ?> checked="checked" <?php } ?> />English<br />
-          <input type="checkbox" name="language[]" id="language3" value="Bengali"<?php if(in_array("Bengali",$lang)) { ?> checked="checked" <?php } ?> />Bengali<br>
+          <input type="checkbox" name="language[]" id="language1" value="Hindi" />Hindi<br />
+          <input type="checkbox" name="language[]" id="language2" value="English" />English<br />
+          <input type="checkbox" name="language[]" id="language3" value="Bengali" />Bengali<br>
           <span id="lang" style="display: none;">Please select atleast 1 language.</span>
 
         </td>
@@ -165,14 +164,8 @@ $lang=explode(",",$row['language']);
       <tr>
         <td>Country</td>
         <td>
-          
           <select name="country" id="country">
             <option id="select" value="0">SELECT</option>
-            <!-- <option id="india" value="INDIA">INDIA</option>
-            <option id="china" value="CHINA">CHINA</option>
-            <option id="usa" value="USA">USA</option>
-            <option id="russia" value="RUSSIA">RUSSIA</option>
-            <option id="germany" value="GERMANY">GERMANY</option> -->
             <?php
             $countries = array("INDIA", "CHINA", "USA", "RUSSIA", "GERMANY");
             foreach ($countries as $item) {
@@ -185,7 +178,7 @@ $lang=explode(",",$row['language']);
       </tr>
       <tr>
         <td>Image</td>
-        <td><input type="file" name="fileToUpload" id="image1" value="uploads/<?php echo $row['image']?>" /><br>
+        <td><input type="file" name="fileToUpload" id="image1" value="uploads/<?php echo $row['image'];?>" /><br>
 
           <span id="img" style="display: none;">Please upload Image.</span>
         </td>
@@ -193,7 +186,7 @@ $lang=explode(",",$row['language']);
       <tr>
         <td>DOB</td>
         <td>
-          <input type="date" name="dob" id="calendar" mbsc-input placeholder="Please select..." value="<?php echo $row['dob']?>"/>
+          <input type="date" name="dob" id="calendar" mbsc-input placeholder="Please select..." value="<?php echo $row['dob'];?>"/>
         </td>
       </tr>
     </table>
