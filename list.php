@@ -10,18 +10,16 @@ if ($mysqli->connect_error) {
         $mysqli->connect_errno . ') ' .
         $mysqli->connect_error);
 }
-$sql = " SELECT * FROM registration_form where deleted=0";
-$result = $mysqli->query($sql);
 
-if(isset($_REQUEST['mode'])&& $_REQUEST['mode']=='Delete'){
-    $id=$_REQUEST['id'];
-    $delsql = "UPDATE `registration_form` SET `deleted`=1 WHERE id=$id ; ";
-   
-    $mysqli->query($delsql);
-    // header("location:list.php");
+if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'Delete') {
+    $current_id = $_REQUEST['id'];
+    $query = "UPDATE `reg` SET deleted=1 WHERE id=$current_id;";
+    $mysqli->query($query);
+    header("Location: list.php");
 }
 
-
+$sql = " SELECT * FROM reg where deleted=0";
+$result = $mysqli->query($sql);
 ?>
 
 <html>
@@ -63,19 +61,7 @@ if(isset($_REQUEST['mode'])&& $_REQUEST['mode']=='Delete'){
             height: 5vh;
         }
     </style>
-
     <script>
-
-
-        const confirmAction = () => {
-            if (confirm("Are you sure you want to delete that?")) {
-               return true;
-            }
-            else{
-                return false;
-            }
-        }
-
         const allDelete = () => {
             let cnt = 0;
             var get = document.list.chk;
@@ -104,17 +90,6 @@ if(isset($_REQUEST['mode'])&& $_REQUEST['mode']=='Delete'){
 
 
         }
-
-        // function deSelect(){
-        //   get = document.getElementsByName('chk');
-        //   var all=document.list.all;
-        //   for (var i = 0; i < get.length; i++) {
-        //     if(get[i].checked == false){
-        //       all.checked = false;
-        //     }
-        //   }
-        // }
-
         function deSelect() {
             var all = document.list.all;
             var ele = document.list.chk;
@@ -123,9 +98,6 @@ if(isset($_REQUEST['mode'])&& $_REQUEST['mode']=='Delete'){
                     all.checked = false;
                 }
             }
-            // if(flag==1){
-            //    all.checked =false;
-            //   }
         }
     </script>
     <link rel="stylesheet" href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css'
@@ -137,43 +109,44 @@ if(isset($_REQUEST['mode'])&& $_REQUEST['mode']=='Delete'){
         $(document).ready(function () {
             $(".btn").click(function () {
                 $("#myModal").modal('show');
-                <?php
-
-                ?>
             });
             $("#confirm").click(function () {
                 $("#myModal").modal('hide');
             });
+            $(".delete-btn").click(function () {
+                if (confirm("Are you sure you want to delete")) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            })
         });
     </script>
     <style>
         .sample {
             margin: 20px;
         }
-
         #table1 {
             border: solid 1px black;
             margin: 5px;
 
             width: 60vw
         }
-
         img {
             width: 4vw;
             height: 5vh;
         }
-
         td {
             border: solid 1px black;
             margin: 5px;
         }
     </style>
 </head>
-
 <body>
     <div name="search" id="search">
         <input type="text" name="search" id="search" value=""> <button margin-left="2vw"> Search</button></input>
-        <div align="right"><a href="registration.html"><button name="new" id="new"> + NEW </button></a></div>
+        <div align="right"><a href="registration.php"><button name="new" id="new"> + NEW </button></a></div>
     </div>
     <form name="list" id="list">
         <table>
@@ -189,15 +162,14 @@ if(isset($_REQUEST['mode'])&& $_REQUEST['mode']=='Delete'){
                 <td> <b>Action </b> </td>
                 <td> <b>View </b> </td>
             </tr>
-
             <?php
             while ($rows = $result->fetch_assoc()) {
                 echo $current_ID = $row['id'];
                 ?>
                 <tr>
                     <td>
-                        <input type="checkbox" onclick="deSelect()" name="chk" id="chk<?php echo $rows['id'] ?>" onclick="deSelect()" value=""
-                            padding="50px"></input>
+                        <input type="checkbox" onclick="deSelect()" name="chk" id="chk<?php echo $rows['id'] ?>"
+                            onclick="deSelect()" value="" padding="50px"></input>
                     </td>
                     <td>
                         <?php echo $rows['image']; ?>
@@ -216,13 +188,13 @@ if(isset($_REQUEST['mode'])&& $_REQUEST['mode']=='Delete'){
                     </td>
                     <td>
                         <button><a href="registration.php?id=<?php echo $rows['id'] ?>&mode=Edit">Edit</a>
-                        </button>
-                        <button onclick="confirmAction()">
-                           <a href="list.php?id=<?php echo $rows['id'] ?>&mode=Delete">Delete</a></button>
+                        </button>             
+                        <a href="list.php?id=<?php echo $rows['id'] ?>&mode=Delete" class="delete-btn">Delete</a>
                     </td>
                     <td>
                         <div class="sample">
-                            <button type="button" class="btn "> <a href="list.php?id=<?php echo $rows['id'] ?>&mode=View">View</a>
+                            <button type="button" class="btn "> <a
+                                    href="list.php?id=<?php echo $rows['id'] ?> mode=View">View</a>
                             </button>
                             <div id="myModal" class="modal fade" tabindex="-1">
                                 <div class="modal-dialog">
@@ -268,5 +240,4 @@ if(isset($_REQUEST['mode'])&& $_REQUEST['mode']=='Delete'){
     </form>
     <button id="allDelete" onclick="allDelete()" margin-left="2vw"> All Delete</button>
 </body>
-
 </html>

@@ -4,7 +4,6 @@ $password = 'c0relynx';
 $database = 'Shakir';
 $servername = 'localhost:3306';
 $mysqli = new mysqli($servername, $user, $password, $database);
-
 if ($mysqli->connect_error) {
     die('Connect Error (' .
         $mysqli->connect_errno . ') ' .
@@ -12,24 +11,19 @@ if ($mysqli->connect_error) {
 }
 if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'Edit') {
   echo $id = $_REQUEST['id'];
-  echo $query = "SELECT * FROM registration_form WHERE id=$id";
-  
+  echo $query = "SELECT * FROM reg WHERE id=$id";
   $result = $mysqli->query($query);
   print_r($result);
   print_r($row = mysqli_fetch_assoc($result));
-
 }
 $lang=explode(",",$row['language']);
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>REGISTRATION FORM</title>
-
   <style>
     textarea,
     input {
@@ -38,37 +32,28 @@ $lang=explode(",",$row['language']);
       padding: 2px;
       padding-right: 2px;
     }
-
     td {
       margin: 4px;
       padding-right: 5px;
       background-color: #f0f8ff;
     }
-
-    table,
-    tr,
-    td {
+    table,tr, td {
       border: solid 1px black;
       margin: 5px;
       margin-left: 20vw;
       width: 50vw;
       padding: 2px;
     }
-
-    #submit,
-    #reset,
-    #back {
+    #submit,#reset,#back {
       margin-left: 16vw;
       size: 10;
       width: 6vw;
       height: 8vh;
       border-radius: 10px;
     }
-
     #reset {
       margin-left: 0vw;
     }
-
     #back {
       margin-left: 20vw;
       size: 20;
@@ -76,26 +61,19 @@ $lang=explode(",",$row['language']);
       height: 6vh;
       border-radius: 10px;
     }
-
     #hidden {
       display: none;
     }
-
     #show {
       display: block;
     }
   </style>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"> </script>
-
 <body>
-
-
   <form name="frm" id="frm" method="post" action="index.php" enctype="multipart/form-data">
     <div align="center" style="background-color: white; margin-right: 50px">
       <b>REGISTRATION FORM</b>
     </div>
-
     <table>
       <tr>
         <td>First Name</td>
@@ -112,13 +90,13 @@ $lang=explode(",",$row['language']);
       </tr>
       <tr>
         <td>Password</td>
-        <td><input type="text" name="password" id="password" value="" disabled/><br>
+        <td><input type="text" name="password" id="password" value="" ><br>
           <span id="pass" style="display: none;">Please provide your Password.</span>
         </td>
       </tr>
       <tr>
         <td>Confirm Password</td>
-        <td><input type="text" name="confirmPassword" id="confirmPassword" value="" disabled/><br>
+        <td><input type="text" name="confirmPassword" id="confirmPassword" value=""/><br>
           <span id="cPass" style="display: none;">Please confirm your Password.</span>
         </td>
       </tr>
@@ -153,26 +131,18 @@ $lang=explode(",",$row['language']);
       </tr>
       <tr>
         <td>Language</td>
-        <td>
-          
+        <td>    
           <input type="checkbox" name="language[]" id="language1" value="Hindi"<?php if(in_array("Hindi",$lang)) { ?> checked="checked" <?php } ?>  />Hindi<br />
           <input type="checkbox" name="language[]" id="language2" value="English"<?php if(in_array("English",$lang)) { ?> checked="checked" <?php } ?> />English<br />
           <input type="checkbox" name="language[]" id="language3" value="Bengali"<?php if(in_array("Bengali",$lang)) { ?> checked="checked" <?php } ?> />Bengali<br>
           <span id="lang" style="display: none;">Please select atleast 1 language.</span>
-
         </td>
       </tr>
       <tr>
         <td>Country</td>
-        <td>
-          
+        <td>     
           <select name="country" id="country">
             <option id="select" value="0">SELECT</option>
-            <!-- <option id="india" value="INDIA">INDIA</option>
-            <option id="china" value="CHINA">CHINA</option>
-            <option id="usa" value="USA">USA</option>
-            <option id="russia" value="RUSSIA">RUSSIA</option>
-            <option id="germany" value="GERMANY">GERMANY</option> -->
             <?php
             $countries = array("INDIA", "CHINA", "USA", "RUSSIA", "GERMANY");
             foreach ($countries as $item) {
@@ -186,7 +156,6 @@ $lang=explode(",",$row['language']);
       <tr>
         <td>Image</td>
         <td><input type="file" name="fileToUpload" id="image1" value="uploads/<?php echo $row['image']?>" /><br>
-
           <span id="img" style="display: none;">Please upload Image.</span>
         </td>
       </tr>
@@ -206,13 +175,9 @@ $lang=explode(",",$row['language']);
 </body>
 
 <script>
-
-
   $(document).ready(function () {
     alert("Okay");
     $('#submit').click(function () {
-
-
       var fname = $("#firstName").val();
       var lname = $("#lastName").val();
       var addr = $("#address").val();
@@ -222,20 +187,15 @@ $lang=explode(",",$row['language']);
       var dateOfBirth = $("#dob").val();
       var lng = $("input[name='language[]']:checked").val();
       var cnt = $("#country").val();
-
       var passwd = $("#password").val();
       var cnfPasswd = $("#confirmPassword").val();
-
       function hideErrorMessage(selector) {
         $(selector).hide();
       }
-
       function showErrorMessage(selector, message) {
         $(selector).html(message).show();
       }
-
-      // Validation logic for First Name
-      if (!fname) {
+      if (!fname) {   // Validation logic for First Name
         showErrorMessage("#fName", "First Name is required");
         $("#firstName").focus();
         return false;
@@ -246,9 +206,7 @@ $lang=explode(",",$row['language']);
       } else {
         hideErrorMessage("#fName");
       }
-
-      // Validation logic for Last Name
-      if (!lname) {
+      if (!lname) {   // Validation logic for Last Name
         showErrorMessage("#lName", "Last Name is required");
         $("#lastName").focus();
         return false;
@@ -259,9 +217,7 @@ $lang=explode(",",$row['language']);
       } else {
         hideErrorMessage("#lName");
       }
-
-      //
-      if (passwd.length == 0) {
+      if (passwd.length == 0) {   //Password Validation
         showErrorMessage("#pass", "Please Enter your Password");
         $("#password").focus();
         return false;
@@ -278,8 +234,7 @@ $lang=explode(",",$row['language']);
         hideErrorMessage("#pass");
         $("#confirmpassword").focus();
       }
-
-      if (cnfPasswd.length == 0) {
+      if (cnfPasswd.length == 0) {   //Password Validation
         showErrorMessage("#cPass", "Please confirm your password");
         $("#confirmpassword").focus();
         return false;
@@ -295,27 +250,21 @@ $lang=explode(",",$row['language']);
       else {
         hideErrorMessage("#cPass");
       }
-
-      // Validation logic for Address
-      if (!addr.length) {
+      if (!addr.length) {   // Validation logic for Address
         showErrorMessage("#addr", "Please Enter Your Address");
         $("#address").focus();
         return false;
       } else {
         hideErrorMessage("#addr");
       }
-
-      // Validation logic for Email
-      if (!emailID) {
+      if (!emailID) {      // Validation logic for Email
         showErrorMessage("#mail", "Please provide your email");
         $("#email").focus();
         return false;
       } else {
         hideErrorMessage("#mail");
       }
-
-      // Validation logic for Phone Number
-      if (!PhoneNo) {
+      if (!PhoneNo) {      // Validation logic for Phone Number
         showErrorMessage("#phno", "Phone number cannot be empty");
         $("#phoneNumber").focus();
         return false;
@@ -326,44 +275,37 @@ $lang=explode(",",$row['language']);
       } else {
         hideErrorMessage("#phno");
       }
-
-      if (gndr === undefined) {
+      if (gndr === undefined) {      // Validation logic for Gender
         showErrorMessage("#gen", "Please select your gender");
         $("#gen").mouseover(function () {
           $("#gen").hide();
         });
         return false;
       }
-
-      if (lng === undefined) {
+      if (lng === undefined) {       // Validation logic for Language
         showErrorMessage("#lang", "Please select your language");
         $("#language").mouseover(function () {
           $("#lang").hide();
         });
         return false;
       }
-
-      if (cnt == 0) {
+      if (cnt == 0) {           // Validation logic for Country
         showErrorMessage("#count", "Please select your country");
         $("#country").click(function () {
           $("#count").hide();
         });
         return false;
       }
-
-      let inputFile = $("#image1").val();
+      let inputFile = $("#image1").val();      // Validation logic for Image
       let imgError = $("#img");
-
       if (inputFile.length == 0) {
         imgError.html("Please upload Image").show();
         return false;
       } else {
         imgError.hide();
       }
-
       let selectedFile = $("#image1")[0].files[0];
       let allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
-
       if (!allowedTypes.includes(selectedFile.type)) {
         imgError.html("Invalid file type. Please upload a JPEG ,JPG or PNG file").show();
         $("#image1").val("");
@@ -374,8 +316,5 @@ $lang=explode(",",$row['language']);
       this.submit();
     });
   });
-
-
 </script>
-
 </html>

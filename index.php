@@ -1,20 +1,15 @@
 <?php
-
 error_reporting(E_ALL);
-
 $host = "10.10.10.10:3306";
 $username = "root";
 $password = "c0relynx";
 $dbname = "Shakir";
-
 $con = mysqli_connect($host, $username, $password, $dbname);
 if (!$con) {
   die("Connection failed! " . mysqli_connect_error());
 } else {
   echo "Connection Established Successfully";
 }
-
-
 echo $firstname = $_REQUEST["firstName"];
 echo $lastname = $_REQUEST["lastName"];
 echo $email = $_REQUEST["email"];
@@ -29,22 +24,16 @@ echo $file = date("dmY_His") . substr($_REQUEST['fileToUpload'], -4) . "." . str
 echo $dob = $_REQUEST["dob"];
 echo $date_entered = date('dmY_his');
 echo $date_modified = date('dmY_his');
-
-
-$query = "INSERT INTO `registration_form`( `first_name`, `last_name`, `password`, `confirm_password`, `address`, `email`, `phone_number`, `gender`, `language`, `country`, `image`, `dob`, `date_entered`, `date_modified`, `created_by`, `modified_by`) VALUES ('$firstname','$lastname','$password','$confirm_password','$address','$email','$phone','$gender','$language','$country','$file','$dob','$date_entered','$date_modified','Shakir','MohammadS')";
-
-
+$query = "INSERT INTO `reg`( `first_name`, `last_name`, `password`, `confirm_password`, `address`, `email`, `phone_number`, `gender`, `language`, `country`, `image`, `dob`, `created_date`, `modified_date`, `created_by`, `modified_by`) VALUES ('$firstname','$lastname','$password','$confirm_password','$address','$email','$phone','$gender','$language','$country','$file','$dob',NOW(),NOW(),'Shakir','Mohammad')";
 mysqli_query($con, $query);
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data</title>
 </head>
-
 <body>
   <b>First Name : </b>
   <?php echo $_REQUEST["firstName"] ?> <br>
@@ -67,7 +56,6 @@ mysqli_query($con, $query);
   print_r($lang); ?> <br>
   <b>Country : </b>
   <?php echo $_REQUEST["country"] ?> <br>
-
   <?php
   $target_dir = "uploads/";
   $newFileName = date('dmY_his') . $_REQUEST["fileToUpload"];
@@ -76,12 +64,12 @@ mysqli_query($con, $query);
   $uploadOk = 1;
 
   //Delete Previous File
-  $files = glob('uploads/*');
-  foreach ($files as $file) {
-    if (is_file($file)) {
-      unlink($file);
-    }
-  }
+  // $files = glob('uploads/*');
+  // foreach ($files as $file) {
+  //   if (is_file($file)) {
+  //     unlink($file);
+  //   }
+  // }
   if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
     // echo "The file ". htmlspecialchars($newFileName).".$extension". " has been uploaded.";
     $uploadOk = 1;
@@ -98,5 +86,4 @@ mysqli_query($con, $query);
   <?php $date = $_REQUEST["dob"];
   echo $date ?> <br>
 </body>
-
 </html>
