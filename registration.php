@@ -90,13 +90,13 @@ $lang=explode(",",$row['language']);
       </tr>
       <tr>
         <td>Password</td>
-        <td><input type="text" name="password" id="password" value="" ><br>
+        <td><input type="text" name="password" id="password" value="<?php echo $_REQUEST['mode']=='Edit' ? $row['password'] :''?>" ><br>
           <span id="pass" style="display: none;">Please provide your Password.</span>
         </td>
       </tr>
       <tr>
         <td>Confirm Password</td>
-        <td><input type="text" name="confirmPassword" id="confirmPassword" value=""/><br>
+        <td><input type="text" name="confirmPassword" id="confirmPassword" value="<?php echo $_REQUEST['mode']=='Edit' ? $row['confirm_password'] :'hidden'?>"/><br>
           <span id="cPass" style="display: none;">Please confirm your Password.</span>
         </td>
       </tr>
@@ -146,7 +146,7 @@ $lang=explode(",",$row['language']);
             <?php
             $countries = array("INDIA", "CHINA", "USA", "RUSSIA", "GERMANY");
             foreach ($countries as $item) {
-              echo "<option value=$item>$item</option>";
+              echo "<option value=$item >$item</option>";
             }
             ?>
           </select><br>
