@@ -67,6 +67,11 @@ $lang=explode(",",$row['language']);
     #show {
       display: block;
     }
+    img{
+      width:7vw;
+      height: 7vh;
+      margin-left: 0.5vw;
+    }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"> </script>
 <body>
@@ -155,8 +160,10 @@ $lang=explode(",",$row['language']);
       </tr>
       <tr>
         <td>Image</td>
-        <td><input type="file" name="fileToUpload" id="image1" value="uploads/<?php echo $row['image']?>" /><br>
-          <span id="img" style="display: none;">Please upload Image.</span>
+        <td><input type="file" name="fileToUpload" id="image1" value="" ><br>
+        <img src="uploads/<?php echo $row['image']?>"/>
+        <?php echo $_REQUEST['mode']=='Edit' ? $row['image'] :''?></input><br>
+          <span id="img" style="display: none;">Please Upoad Image</span>
         </td>
       </tr>
       <tr>

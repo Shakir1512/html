@@ -22,6 +22,21 @@ $sql = " SELECT * FROM reg where deleted=0";
 $result = $mysqli->query($sql);
 ?>
 
+<?php
+
+if (isset($_REQUEST['search']) ){
+    $query = $_REQUEST['search'];
+    $WHERE = "";
+    if ($query != null) {
+        $raw_results = "SELECT * FROM reg WHERE deleted=0 AND (`first_name` LIKE '%" . $query . "%') OR (`last_name` LIKE '%" . $query . "%') OR (`email` LIKE '%" . $query . "%') OR (`phone_number` LIKE '%" . $query . "%');";
+        $result = $mysqli->query($raw_results);
+    }
+
+}
+
+
+?>
+
 <html>
 <title>Main</title>
 
@@ -98,7 +113,7 @@ $result = $mysqli->query($sql);
                     all.checked = false;
                 }
             }
-        }
+    }
     </script>
     <link rel="stylesheet" href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css'
         media="screen" />
@@ -121,32 +136,45 @@ $result = $mysqli->query($sql);
                     return false;
                 }
             })
-        });
+    });
     </script>
     <style>
         .sample {
             margin: 20px;
         }
+
         #table1 {
             border: solid 1px black;
             margin: 5px;
 
             width: 60vw
         }
+
         img {
             width: 4vw;
             height: 5vh;
         }
+
         td {
             border: solid 1px black;
             margin: 5px;
         }
     </style>
 </head>
+
 <body>
-    <div name="search" id="search">
-        <input type="text" name="search" id="search" value=""> <button margin-left="2vw"> Search</button></input>
-        <div align="right"><a href="registration.php"><button name="new" id="new"> + NEW </button></a></div>
+
+    <form action="" method="GET">
+        <input type="text" name="search" required value="<?php if (isset($_GET['search'])) {
+            echo $_REQUEST['search'];
+        } ?>" placeholder="Search data" margin-left="2vw" />
+        <button type="submit" class="searchbtn" margin-left="2vw">Search</button>
+    </form>
+
+
+    <!-- <div name="search" id="search">
+        <input type="text" name="query" id="query" value=""> <button margin-left="2vw"> Search</button></input> -->
+    <div align="right"><a href="registration.php"><button name="new" id="new"> + NEW </button></a></div>
     </div>
     <form name="list" id="list">
         <table>
@@ -162,6 +190,7 @@ $result = $mysqli->query($sql);
                 <td> <b>Action </b> </td>
                 <td> <b>View </b> </td>
             </tr>
+
             <?php
             while ($rows = $result->fetch_assoc()) {
                 echo $current_ID = $row['id'];
@@ -188,7 +217,7 @@ $result = $mysqli->query($sql);
                     </td>
                     <td>
                         <button><a href="registration.php?id=<?php echo $rows['id'] ?>&mode=Edit">Edit</a>
-                        </button>             
+                        </button>
                         <a href="list.php?id=<?php echo $rows['id'] ?>&mode=Delete" class="delete-btn">Delete</a>
                     </td>
                     <td>
@@ -240,4 +269,5 @@ $result = $mysqli->query($sql);
     </form>
     <button id="allDelete" onclick="allDelete()" margin-left="2vw"> All Delete</button>
 </body>
+
 </html>
