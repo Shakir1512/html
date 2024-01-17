@@ -101,7 +101,7 @@ $lang=explode(",",$row['language']);
       </tr>
       <tr>
         <td>Confirm Password</td>
-        <td><input type="text" name="confirmPassword" id="confirmPassword" value="<?php echo $_REQUEST['mode']=='Edit' ? $row['confirm_password'] :'hidden'?>"/><br>
+        <td><input type="text" name="confirmPassword" id="confirmPassword" value="<?php echo $_REQUEST['mode']=='Edit' ? $row['confirm_password'] :''?>"/><br>
           <span id="cPass" style="display: none;">Please confirm your Password.</span>
         </td>
       </tr>
@@ -161,7 +161,7 @@ $lang=explode(",",$row['language']);
       <tr>
         <td>Image</td>
         <td><input type="file" name="fileToUpload" id="image1" value="" ><br>
-        <img src="uploads/<?php echo $row['image']?>"/>
+        <!-- <img src="uploads/<?php echo $row['image']?>"/> -->
         <?php echo $_REQUEST['mode']=='Edit' ? $row['image'] :''?></input><br>
           <span id="img" style="display: none;">Please Upoad Image</span>
         </td>

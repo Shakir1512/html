@@ -10,21 +10,25 @@ if ($mysqli->connect_error) {
         $mysqli->connect_errno . ') ' .
         $mysqli->connect_error);
 }
-
+//Single Delete
 if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'Delete') {
     $current_id = $_REQUEST['id'];
     $query = "UPDATE `reg` SET deleted=1 WHERE id=$current_id;";
     $mysqli->query($query);
-    header("Location: list.php");
+    // header("Location: list.php");
 }
 
 $sql = " SELECT * FROM reg where deleted=0";
 $result = $mysqli->query($sql);
+
+
+
+
 ?>
 
 <?php
 
-if (isset($_REQUEST['search']) ){
+if (isset($_REQUEST['search'])) {
     $query = $_REQUEST['search'];
     $WHERE = "";
     if ($query != null) {
@@ -33,6 +37,20 @@ if (isset($_REQUEST['search']) ){
     }
 
 }
+
+//All delete
+if (isset($_REQUEST['allDelete'])) {
+    print_r("I'm in all delete");
+    print $arr = json_decode($_REQUEST['delId']);
+    $arr = explode(',', $arr);
+    foreach ($arr as $item) {
+        print $id = $item;
+        $sql = "UPDATE `reg` SET `deleted`='1' WHERE id=$id";
+        $result = $mysqli->query($sql);
+    }
+    header("Location:http://10.10.10.10/list.php");
+}
+
 
 
 ?>
@@ -77,24 +95,29 @@ if (isset($_REQUEST['search']) ){
         }
     </style>
     <script>
+
         const allDelete = () => {
+            var delId = [];
             let cnt = 0;
-            var get = document.list.chk;
+            var get = document.getElementsByName('chk');
+            console.log(get);
             for (var i = 0; i < get.length; i++) {
                 if (get[i].checked == true) {
+                    delId[cnt] = get[i].id;
+                    console.log(delId[cnt]);
                     cnt++;
                 }
             }
-            if (cnt > 0) {
-                const response = confirm("Are you sure you want to delete that?");
-                if (response) {
-                    alert("List item deleted. ");
-                }
-
+            if (cnt == 0) {
+                alert("Please select atleast one item to be deleted");
+                return false;
+            } else if (cnt > 0) {
+                if (confirm("Are you sure you want to delete that?"))
+                    window.location.href = "http://10.10.10.10/list.php?id=" + delId + "&mode=allDelete";
+                else
+                    window.location.href = "http://10.10.10.10/list.php";
             }
-            else {
-                alert("Please select atleast one item to be deleted ");
-            }
+            return true;
         }
 
         function checkUncheck(checkBox) {
@@ -113,7 +136,7 @@ if (isset($_REQUEST['search']) ){
                     all.checked = false;
                 }
             }
-    }
+        }
     </script>
     <link rel="stylesheet" href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css'
         media="screen" />
@@ -128,16 +151,56 @@ if (isset($_REQUEST['search']) ){
             $("#confirm").click(function () {
                 $("#myModal").modal('hide');
             });
-            $(".delete-btn").click(function () {
-                if (confirm("Are you sure you want to delete")) {
-                    return true;
-                }
-                else {
-                    return false;
-                }
-            })
-    });
+
+
+            // $(".delete-btn").click(function () {
+            //     if (confirm("Are you sure you want to delete")) {
+            //         var id = $(this).data("id");
+            //         var mode = $(this).data("mode");
+            //         $.ajax({
+            //             type: "POST",
+            //             url: "list.php",
+            //             data: { id: id, mode: mode },
+
+            //             done(function (response) {
+            //                 // alert("Success");
+
+            //             }) ,
+            //             fail( function (error) {
+
+            //                 console.log(error);
+            //             })
+            //         });
+            //     }
+            //     else {
+            //         return false;
+            //     }
+            // })
+        });
     </script>
+
+<script>
+    $(document).ready(function () {
+        $(".delete-btn").on("click", function () {
+            var id = $(this).data("id");
+            var mode = $(this).data("mode");
+            $.ajax({
+                type: "POST",
+                url: "list.php",
+                data: { id: id, mode: mode },
+                success: function (response) {
+                    alert("Success");
+                    $( "#main" ).load( "#main" ); 
+                },
+                error: function (error) {
+
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
+
     <style>
         .sample {
             margin: 20px;
@@ -159,19 +222,22 @@ if (isset($_REQUEST['search']) ){
             border: solid 1px black;
             margin: 5px;
         }
+
+        #Search {
+            margin-left: 20vw;
+        }
+
+        #Search {}
     </style>
 </head>
 
-<body>
-
-    <form action="" method="GET">
+<body id="main">
+    <form action="" method="GET" name="Search" id="Search">
         <input type="text" name="search" required value="<?php if (isset($_GET['search'])) {
             echo $_REQUEST['search'];
         } ?>" placeholder="Search data" margin-left="2vw" />
-        <button type="submit" class="searchbtn" margin-left="2vw">Search</button>
+        <button type="submit" class="searchbtn">Search</button>
     </form>
-
-
     <!-- <div name="search" id="search">
         <input type="text" name="query" id="query" value=""> <button margin-left="2vw"> Search</button></input> -->
     <div align="right"><a href="registration.php"><button name="new" id="new"> + NEW </button></a></div>
@@ -197,7 +263,7 @@ if (isset($_REQUEST['search']) ){
                 ?>
                 <tr>
                     <td>
-                        <input type="checkbox" onclick="deSelect()" name="chk" id="chk<?php echo $rows['id'] ?>"
+                        <input type="checkbox" onclick="deSelect()" name="chk" id="<?php echo $rows['id'] ?>"
                             onclick="deSelect()" value="" padding="50px"></input>
                     </td>
                     <td>
@@ -218,7 +284,8 @@ if (isset($_REQUEST['search']) ){
                     <td>
                         <button><a href="registration.php?id=<?php echo $rows['id'] ?>&mode=Edit">Edit</a>
                         </button>
-                        <a href="list.php?id=<?php echo $rows['id'] ?>&mode=Delete" class="delete-btn">Delete</a>
+
+                        <a href="#" class="delete-btn" data-id="<?php echo $rows['id']; ?>" data-mode="Delete">Delete</a>
                     </td>
                     <td>
                         <div class="sample">
@@ -261,13 +328,17 @@ if (isset($_REQUEST['search']) ){
                                 </div>
                             </div>
                         </div>
+                    </td>
                 </tr>
                 <?php
             }
             ?>
         </table>
     </form>
-    <button id="allDelete" onclick="allDelete()" margin-left="2vw"> All Delete</button>
+    <button id="allDelete" onclick="allDelete()" margin-left="2vw">
+        <a href="list.php?id=<?php echo $rows['id'] ?>&mode=allDelete" name="allDelete">All Delete</a> </button>
 </body>
+
+
 
 </html>
