@@ -29,11 +29,13 @@ mysqli_query($con, $query);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Data</title>
 </head>
+
 <body>
   <b>First Name : </b>
   <?php echo $_REQUEST["firstName"] ?> <br>
@@ -86,4 +88,5 @@ mysqli_query($con, $query);
   <?php $date = $_REQUEST["dob"];
   echo $date ?> <br>
 </body>
+
 </html>

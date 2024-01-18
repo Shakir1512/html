@@ -5,9 +5,9 @@ $database = 'Shakir';
 $servername = 'localhost:3306';
 $mysqli = new mysqli($servername, $user, $password, $database);
 if ($mysqli->connect_error) {
-    die('Connect Error (' .
-        $mysqli->connect_errno . ') ' .
-        $mysqli->connect_error);
+  die('Connect Error (' .
+    $mysqli->connect_errno . ') ' .
+    $mysqli->connect_error);
 }
 if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'Edit') {
   echo $id = $_REQUEST['id'];
@@ -16,10 +16,11 @@ if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'Edit') {
   print_r($result);
   print_r($row = mysqli_fetch_assoc($result));
 }
-$lang=explode(",",$row['language']);
+$lang = explode(",", $row['language']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -32,28 +33,37 @@ $lang=explode(",",$row['language']);
       padding: 2px;
       padding-right: 2px;
     }
+
     td {
       margin: 4px;
       padding-right: 5px;
       background-color: #f0f8ff;
     }
-    table,tr, td {
+
+    table,
+    tr,
+    td {
       border: solid 1px black;
       margin: 5px;
       margin-left: 20vw;
       width: 50vw;
       padding: 2px;
     }
-    #submit,#reset,#back {
+
+    #submit,
+    #reset,
+    #back {
       margin-left: 16vw;
       size: 10;
       width: 6vw;
       height: 8vh;
       border-radius: 10px;
     }
+
     #reset {
       margin-left: 0vw;
     }
+
     #back {
       margin-left: 20vw;
       size: 20;
@@ -61,19 +71,23 @@ $lang=explode(",",$row['language']);
       height: 6vh;
       border-radius: 10px;
     }
+
     #hidden {
       display: none;
     }
+
     #show {
       display: block;
     }
-    img{
-      width:7vw;
+
+    img {
+      width: 7vw;
       height: 7vh;
       margin-left: 0.5vw;
     }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"> </script>
+
 <body>
   <form name="frm" id="frm" method="post" action="index.php" enctype="multipart/form-data">
     <div align="center" style="background-color: white; margin-right: 50px">
@@ -83,69 +97,73 @@ $lang=explode(",",$row['language']);
       <tr>
         <td>First Name</td>
         <td>
-          <input type="text" name="firstName" id="firstName" value="<?php echo $row['first_name']?>" /><br>
+          <input type="text" name="firstName" id="firstName" value="<?php echo $row['first_name'] ?>" /><br>
           <span id="fName"></span>
         </td>
       </tr>
       <tr>
         <td>Last Name</td>
-        <td><input type="text" name="lastName" id="lastName" value="<?php echo $row['last_name']?>"  /><br>
+        <td><input type="text" name="lastName" id="lastName" value="<?php echo $row['last_name'] ?>" /><br>
           <span id="lName" style="display: none;">Please provide your last name.</span>
         </td>
       </tr>
       <tr>
         <td>Password</td>
-        <td><input type="text" name="password" id="password" value="<?php echo $_REQUEST['mode']=='Edit' ? $row['password'] :''?>" ><br>
+        <td><input type="text" name="password" id="password"
+            value="<?php echo $_REQUEST['mode'] == 'Edit' ? $row['password'] : '' ?>"><br>
           <span id="pass" style="display: none;">Please provide your Password.</span>
         </td>
       </tr>
       <tr>
         <td>Confirm Password</td>
-        <td><input type="text" name="confirmPassword" id="confirmPassword" value="<?php echo $_REQUEST['mode']=='Edit' ? $row['confirm_password'] :''?>"/><br>
+        <td><input type="text" name="confirmPassword" id="confirmPassword"
+            value="<?php echo $_REQUEST['mode'] == 'Edit' ? $row['confirm_password'] : '' ?>" /><br>
           <span id="cPass" style="display: none;">Please confirm your Password.</span>
         </td>
       </tr>
       <tr>
         <td>Address</td>
         <td>
-          <textarea name="address" id="address" rows="3" cols="26.9" style="padding: 2px" value=""><?php echo $row['address']?></textarea><br>
+          <textarea name="address" id="address" rows="3" cols="26.9" style="padding: 2px"
+            value=""><?php echo $row['address'] ?></textarea><br>
           <span id="addr" style="display: none;">Please provide your Address.</span>
         </td>
       </tr>
       <tr>
         <td>Email</td>
-        <td><input type="email" name="email" id="email" value="<?php echo $row['email']?>"/><br>
+        <td><input type="email" name="email" id="email" value="<?php echo $row['email'] ?>" /><br>
           <span id="mail" style="display: none;">Please provide your email.</span>
         </td>
       </tr>
       <tr>
         <td>Phone Number</td>
         <td>
-          <input type="text" name="phoneNumber" id="phoneNumber" value="<?php echo $row['phone_number']?>"/><br>
+          <input type="text" name="phoneNumber" id="phoneNumber" value="<?php echo $row['phone_number'] ?>" /><br>
           <span id="phno" style="display: none;">Please provide your phone number.</span>
         </td>
       </tr>
       <tr>
         <td>Gender</td>
         <td>
-          <input type="radio" name="gender" id="genderMale" value="Male"<?php echo ($row['gender']=='Male')?'checked':'' ?>/>Male<br />
-          <input type="radio" name="gender" id="genderFemale" value="Female"<?php echo ($row['gender']=='Female')?'checked':'' ?> />Female
+          <input type="radio" name="gender" id="genderMale" value="Male" <?php echo ($row['gender'] == 'Male') ? 'checked' : '' ?> />Male<br />
+          <input type="radio" name="gender" id="genderFemale" value="Female" <?php echo ($row['gender'] == 'Female') ? 'checked' : '' ?> />Female
           <br>
           <span id="gen" style="display: none;">Please provide your Gender.</span>
         </td>
       </tr>
       <tr>
         <td>Language</td>
-        <td>    
-          <input type="checkbox" name="language[]" id="language1" value="Hindi"<?php if(in_array("Hindi",$lang)) { ?> checked="checked" <?php } ?>  />Hindi<br />
-          <input type="checkbox" name="language[]" id="language2" value="English"<?php if(in_array("English",$lang)) { ?> checked="checked" <?php } ?> />English<br />
-          <input type="checkbox" name="language[]" id="language3" value="Bengali"<?php if(in_array("Bengali",$lang)) { ?> checked="checked" <?php } ?> />Bengali<br>
+        <td>
+          <input type="checkbox" name="language[]" id="language1" value="Hindi" <?php if (in_array("Hindi", $lang)) { ?>
+              checked="checked" <?php } ?> />Hindi<br />
+          <input type="checkbox" name="language[]" id="language2" value="English" <?php if (in_array("English", $lang)) { ?> checked="checked" <?php } ?> />English<br />
+          <input type="checkbox" name="language[]" id="language3" value="Bengali" <?php if (in_array("Bengali", $lang)) { ?> checked="checked" <?php } ?> />Bengali<br>
           <span id="lang" style="display: none;">Please select atleast 1 language.</span>
         </td>
       </tr>
       <tr>
         <td>Country</td>
-        <td>     
+        <td>
           <select name="country" id="country">
             <option id="select" value="0">SELECT</option>
             <?php
@@ -160,16 +178,17 @@ $lang=explode(",",$row['language']);
       </tr>
       <tr>
         <td>Image</td>
-        <td><input type="file" name="fileToUpload" id="image1" value="" ><br>
-        <!-- <img src="uploads/<?php echo $row['image']?>"/> -->
-        <?php echo $_REQUEST['mode']=='Edit' ? $row['image'] :''?></input><br>
+        <td><input type="file" name="fileToUpload" id="image1" value=""><br>
+          <!-- <img src="uploads/<?php echo $row['image'] ?>"/> -->
+          <?php echo $_REQUEST['mode'] == 'Edit' ? $row['image'] : '' ?></input><br>
           <span id="img" style="display: none;">Please Upoad Image</span>
         </td>
       </tr>
       <tr>
         <td>DOB</td>
         <td>
-          <input type="date" name="dob" id="calendar" mbsc-input placeholder="Please select..." value="<?php echo $row['dob']?>"/>
+          <input type="date" name="dob" id="calendar" mbsc-input placeholder="Please select..."
+            value="<?php echo $row['dob'] ?>" />
         </td>
       </tr>
     </table>
@@ -324,4 +343,5 @@ $lang=explode(",",$row['language']);
     });
   });
 </script>
+
 </html>

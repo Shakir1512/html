@@ -10,14 +10,6 @@ if ($mysqli->connect_error) {
         $mysqli->connect_errno . ') ' .
         $mysqli->connect_error);
 }
-//Single Delete
-if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'Delete') {
-    $current_id = $_REQUEST['id'];
-    $query = "UPDATE `reg` SET deleted=1 WHERE id=$current_id;";
-    $mysqli->query($query);
-    // header("Location: list.php");
-}
-
 $sql = " SELECT * FROM reg where deleted=0";
 $result = $mysqli->query($sql);
 
@@ -28,28 +20,28 @@ $result = $mysqli->query($sql);
 
 <?php
 
-if (isset($_REQUEST['search'])) {
-    $query = $_REQUEST['search'];
-    $WHERE = "";
-    if ($query != null) {
-        $raw_results = "SELECT * FROM reg WHERE deleted=0 AND (`first_name` LIKE '%" . $query . "%') OR (`last_name` LIKE '%" . $query . "%') OR (`email` LIKE '%" . $query . "%') OR (`phone_number` LIKE '%" . $query . "%');";
-        $result = $mysqli->query($raw_results);
-    }
+// if (isset($_REQUEST['search'])) {
+//     $query = $_REQUEST['search'];
+//     $WHERE = "";
+//     if ($query != null) {
+//         $raw_results = "SELECT * FROM reg WHERE deleted=0 AND (`first_name` LIKE '%" . $query . "%') OR (`last_name` LIKE '%" . $query . "%') OR (`email` LIKE '%" . $query . "%') OR (`phone_number` LIKE '%" . $query . "%');";
+//         $result = $mysqli->query($raw_results);
+//     }
 
-}
+// }
 
 //All delete
-if (isset($_REQUEST['allDelete'])) {
-    print_r("I'm in all delete");
-    print $arr = json_decode($_REQUEST['delId']);
-    $arr = explode(',', $arr);
-    foreach ($arr as $item) {
-        print $id = $item;
-        $sql = "UPDATE `reg` SET `deleted`='1' WHERE id=$id";
-        $result = $mysqli->query($sql);
-    }
-    header("Location:http://10.10.10.10/list.php");
-}
+// if (isset($_REQUEST['allDelete'])) {
+//     print_r("I'm in all delete");
+//     print $arr = json_decode($_REQUEST['delId']);
+//     $arr = explode(',', $arr);
+//     foreach ($arr as $item) {
+//         print $id = $item;
+//         $sql = "UPDATE `reg` SET `deleted`='1' WHERE id=$id";
+//         $result = $mysqli->query($sql);
+//     }
+//     header("Location:http://10.10.10.10/list.php");
+// }
 
 
 
@@ -64,7 +56,7 @@ if (isset($_REQUEST['allDelete'])) {
             margin-left: 15vw;
         }
 
-        #allDelete {
+        #allDeleteBtn {
             margin-left: 10vw;
             height: 5vh;
             width: 7vw;
@@ -96,29 +88,29 @@ if (isset($_REQUEST['allDelete'])) {
     </style>
     <script>
 
-        const allDelete = () => {
-            var delId = [];
-            let cnt = 0;
-            var get = document.getElementsByName('chk');
-            console.log(get);
-            for (var i = 0; i < get.length; i++) {
-                if (get[i].checked == true) {
-                    delId[cnt] = get[i].id;
-                    console.log(delId[cnt]);
-                    cnt++;
-                }
-            }
-            if (cnt == 0) {
-                alert("Please select atleast one item to be deleted");
-                return false;
-            } else if (cnt > 0) {
-                if (confirm("Are you sure you want to delete that?"))
-                    window.location.href = "http://10.10.10.10/list.php?id=" + delId + "&mode=allDelete";
-                else
-                    window.location.href = "http://10.10.10.10/list.php";
-            }
-            return true;
-        }
+        // const allDelete = () => {
+        //     var delId = [];
+        //     let cnt = 0;
+        //     var get = document.getElementsByName('chk');
+        //     console.log(get);
+        //     for (var i = 0; i < get.length; i++) {
+        //         if (get[i].checked == true) {
+        //             delId[cnt] = get[i].id;
+        //             console.log(delId[cnt]);
+        //             cnt++;
+        //         }
+        //     }
+        //     if (cnt == 0) {
+        //         alert("Please select atleast one item to be deleted");
+        //         return false;
+        //     } else if (cnt > 0) {
+        //         if (confirm("Are you sure you want to delete that?"))
+        //             window.location.href = "http://10.10.10.10/list.php?id=" + delId + "&mode=allDelete";
+        //         else
+        //             window.location.href = "http://10.10.10.10/list.php";
+        //     }
+        //     return true;
+        // }
 
         function checkUncheck(checkBox) {
             get = document.getElementsByName('chk');
@@ -179,27 +171,9 @@ if (isset($_REQUEST['allDelete'])) {
         });
     </script>
 
-<script>
-    $(document).ready(function () {
-        $(".delete-btn").on("click", function () {
-            var id = $(this).data("id");
-            var mode = $(this).data("mode");
-            $.ajax({
-                type: "POST",
-                url: "list.php",
-                data: { id: id, mode: mode },
-                success: function (response) {
-                    alert("Success");
-                    $( "#main" ).load( "#main" ); 
-                },
-                error: function (error) {
-
-                    console.log(error);
-                }
-            });
-        });
-    });
-</script>
+    <script src="/js/delete.js"></script>
+    <script src="/js/alldelete.js"></script>
+    <script src="/js/search.js"></script>
 
     <style>
         .sample {
@@ -233,13 +207,12 @@ if (isset($_REQUEST['allDelete'])) {
 
 <body id="main">
     <form action="" method="GET" name="Search" id="Search">
-        <input type="text" name="search" required value="<?php if (isset($_GET['search'])) {
+        <input type="text" id="searchInput" name="search" required value="<?php if (isset($_GET['search'])) {
             echo $_REQUEST['search'];
         } ?>" placeholder="Search data" margin-left="2vw" />
-        <button type="submit" class="searchbtn">Search</button>
+        <button type="submit" class="searchbtn" id="searchBtn">Search</button>
     </form>
-    <!-- <div name="search" id="search">
-        <input type="text" name="query" id="query" value=""> <button margin-left="2vw"> Search</button></input> -->
+
     <div align="right"><a href="registration.php"><button name="new" id="new"> + NEW </button></a></div>
     </div>
     <form name="list" id="list">
@@ -256,7 +229,7 @@ if (isset($_REQUEST['allDelete'])) {
                 <td> <b>Action </b> </td>
                 <td> <b>View </b> </td>
             </tr>
-
+            <div id="display">
             <?php
             while ($rows = $result->fetch_assoc()) {
                 echo $current_ID = $row['id'];
@@ -333,10 +306,12 @@ if (isset($_REQUEST['allDelete'])) {
                 <?php
             }
             ?>
+            </div>
         </table>
     </form>
-    <button id="allDelete" onclick="allDelete()" margin-left="2vw">
-        <a href="list.php?id=<?php echo $rows['id'] ?>&mode=allDelete" name="allDelete">All Delete</a> </button>
+    <!-- <button id="allDelete" onclick="allDelete()" margin-left="2vw">
+        <a href="" name="allDelete">All Delete</a> </button> -->
+    <button id="allDeleteBtn" margin-left="2vw">All Delete</button>
 </body>
 
 
