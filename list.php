@@ -52,6 +52,7 @@ $result = $mysqli->query($sql);
 ?>
 <html>
 <title>Main</title>
+
 <head>
     <style>
         #search {
@@ -150,16 +151,49 @@ $result = $mysqli->query($sql);
             margin: 5px;
         }
 
-        #Search {
+        #fromDate {
+            margin-left: 2vw;
+        }
+
+        #searchInput {
+            margin-top: 2vh;
             margin-left: 20vw;
+        }
+
+        #searchBtn {
+            margin-top: 2vh;
+            margin-left: 59.5vw;
+            width: 6vw;
+            height: 4vh;
+        }
+
+        #date {
+            width: 8vw;
+            height: 4vh;
+            margin-left: 1vw;
         }
     </style>
 </head>
+
 <body id="main">
     <!-- <form action="" method="GET" name="Search" id="Search"> -->
-        <input type="text" id="searchInput" name="search" value="" placeholder="Search data" margin-left="2vw" />
-        <button type="submit" id="searchBtn" onclick="searchbtn()" 
-            data-mode="Search">Search</button>
+
+    <input type="text" id="searchInput" name="search" value="" placeholder="Search data" margin-left="2vw" />
+    <select name="dropdown" id="date">
+        <option value="select">Select</option>
+        <option value="1">Today</option>
+        <option value="2">Yesterday</option>
+        <option value="3">Last 7 days</option>
+        <option value="4">Last 14 days</option>
+        <option value="5">Last 1 month</option>
+        <option value="6">Last 3 Month</option>
+        <option value="6">Last 3 Month</option>
+        <option value="7">Last 6 Month</option>
+    </select>
+    <input type="date" id="fromDate" />
+    <input type="date" id="toDate" />
+
+    <br><button type="submit" id="searchBtn" onclick="searchbtn()" data-mode="Search">Search</button>
     <!-- </form> -->
 
     <div align="right"><a href="registration.php"><button name="new" id="new"> + NEW </button></a></div>
@@ -182,7 +216,7 @@ $result = $mysqli->query($sql);
             <div id="display">
                 <?php
                 while ($rows = $result->fetch_assoc()) {
-                    echo $current_ID = $rows['id'];
+                    echo $current_ID = $row['id'];
                     ?>
                     <tr>
                         <td>

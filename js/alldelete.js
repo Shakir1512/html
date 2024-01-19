@@ -13,7 +13,7 @@ $(document).ready(function () {
           success: function (response) {
             alert("Success");
             // location.reload();
-            $("#main").load("#main");
+            $("#main").load("#display");
           },
           error: function (error) {
             console.log(error);
