@@ -4,17 +4,23 @@ $password = 'c0relynx';
 $database = 'Shakir';
 $servername = 'localhost:3306';
 $mysqli = new mysqli($servername, $user, $password, $database);
+
 if ($mysqli->connect_error) {
-  die('Connect Error (' .
-    $mysqli->connect_errno . ') ' .
-    $mysqli->connect_error);
+    die('Connect Error (' .
+        $mysqli->connect_errno . ') ' .
+        $mysqli->connect_error);
 }
+
+
+
+
 if (isset($_REQUEST['mode']) && $_REQUEST['mode'] == 'Edit') {
+  
   echo $id = $_REQUEST['id'];
   echo $query = "SELECT * FROM reg WHERE id=$id";
   $result = $mysqli->query($query);
-  print_r($result);
-  print_r($row = mysqli_fetch_assoc($result));
+
+  $row = mysqli_fetch_assoc($result);
 }
 $lang = explode(",", $row['language']);
 ?>
@@ -89,7 +95,7 @@ $lang = explode(",", $row['language']);
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.0/jquery.min.js"> </script>
 
 <body>
-  <form name="frm" id="frm" method="post" action="index.php" enctype="multipart/form-data">
+  <form name="frm" id="frm" method="post" action="list.php" enctype="multipart/form-data">
     <div align="center" style="background-color: white; margin-right: 50px">
       <b>REGISTRATION FORM</b>
     </div>
@@ -178,8 +184,8 @@ $lang = explode(",", $row['language']);
       </tr>
       <tr>
         <td>Image</td>
-        <td><input type="file" name="fileToUpload" id="image1" value=""><br>
-          <!-- <img src="uploads/<?php echo $row['image'] ?>"/> -->
+        <td><input type="file" name="fileToUpload" id="image1" value="uploads/<?php echo $row['image'] ?>"><br>
+          <img src="uploads/<?php echo $row['image'] ?>" />
           <?php echo $_REQUEST['mode'] == 'Edit' ? $row['image'] : '' ?></input><br>
           <span id="img" style="display: none;">Please Upoad Image</span>
         </td>
@@ -322,23 +328,26 @@ $lang = explode(",", $row['language']);
         });
         return false;
       }
-      let inputFile = $("#image1").val();      // Validation logic for Image
-      let imgError = $("#img");
-      if (inputFile.length == 0) {
-        imgError.html("Please upload Image").show();
-        return false;
-      } else {
-        imgError.hide();
+      if (isset($_REQUEST['mode'] != 'Edit')) {
+        let inputFile = $("#image1").val();      // Validation logic for Image
+        let imgError = $("#img");
+        if (inputFile.length == 0) {
+          imgError.html("Please upload Image").show();
+          return false;
+        } else {
+          imgError.hide();
+        }
+        let selectedFile = $("#image1")[0].files[0];
+        let allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+        if (!allowedTypes.includes(selectedFile.type)) {
+          imgError.html("Invalid file type. Please upload a JPEG ,JPG or PNG file").show();
+          $("#image1").val("");
+          return false;
+        } else {
+          imgError.hide();
+        }
       }
-      let selectedFile = $("#image1")[0].files[0];
-      let allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
-      if (!allowedTypes.includes(selectedFile.type)) {
-        imgError.html("Invalid file type. Please upload a JPEG ,JPG or PNG file").show();
-        $("#image1").val("");
-        return false;
-      } else {
-        imgError.hide();
-      }
+
       this.submit();
     });
   });
